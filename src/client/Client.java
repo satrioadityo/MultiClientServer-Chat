@@ -47,7 +47,8 @@ public class Client {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String serverName = "192.168.1.117";
+//        String serverName = "192.168.1.117";
+        String serverName = "10.5.15.89";
         int portNumber = 4444;
         
         try {
