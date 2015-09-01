@@ -223,12 +223,12 @@ public class GUIClient extends javax.swing.JFrame {
         
         // set username, koneksikan ke server dan port
         try{
-            client = new Client(IPserver, portNumber, userName);
-            if(client.clientSocket.isConnected()){
-                JOptionPane.showMessageDialog(this, "Berhasil terhubung ke server\n" 
-                    + client.getServerName(), "Success" , JOptionPane.INFORMATION_MESSAGE);
-                append(userName+" : just connected to " + client.clientSocket.getRemoteSocketAddress());
-            }
+//            client = new Client(IPserver, portNumber, userName);
+//            if(client.clientSocket.isConnected()){
+//                JOptionPane.showMessageDialog(this, "Berhasil terhubung ke server\n" 
+//                    + client.getServerName(), "Success" , JOptionPane.INFORMATION_MESSAGE);
+//                append(userName+" : just connected to " + client.clientSocket.getRemoteSocketAddress());
+//            }
             txtIPServer.setEditable(false);
             txtPort.setEditable(false);
             txtUsername.setEditable(false);
@@ -242,7 +242,7 @@ public class GUIClient extends javax.swing.JFrame {
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
         // disconnect
-        client.closeConnection();
+//        client.closeConnection();
         // enable form
         txtIPServer.setEditable(true);
         txtPort.setEditable(true);
@@ -255,15 +255,15 @@ public class GUIClient extends javax.swing.JFrame {
         String msg = txtMessage.getText();
         
         // send ke server
-        client.outStream.println(msg);
+//        client.outStream.println(msg);
         
-        try {
-            // tampilkan ke txt message sent
-            String msgFromServer = client.inStream.readLine();
-            append(msgFromServer);
-        } catch (IOException ex) {
-            Logger.getLogger(GUIClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            // tampilkan ke txt message sent
+////            String msgFromServer = client.inStream.readLine();
+////            append(msgFromServer);
+//        } catch (IOException ex) {
+//            Logger.getLogger(GUIClient.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         txtMessage.setText("");
     }//GEN-LAST:event_btnSendActionPerformed
 
