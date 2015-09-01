@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
  *
  * @author satrio
  */
-public class Client {
+public class Client extends Thread{
     
     private String serverName, userName, message;
     private int portNumber;
@@ -21,27 +21,22 @@ public class Client {
     PrintWriter outStream;
     BufferedReader inStream;
 
-    public Client(String serverName, int portNumber, String userName) {
+    public Client(BufferedReader inStream) {
+        this.inStream = inStream;
+    }
+
+    @Override
+    public void run() {
         try {
-            this.serverName = serverName;
-            this.portNumber = portNumber;
-            this.userName = userName;
-            
-            // buat objek client socket, hubungkan dengan port pada server
-            clientSocket = new Socket(serverName, portNumber);
-            
-            // buat printwriter dari outputstream yg sudah ada, yaitu clientSocket
-            // untuk mengirimkan pesan ke server
-            outStream = new PrintWriter(clientSocket.getOutputStream(), true);
-            
-            // buat bufferedreader untuk menerima pesan dari server
-            inStream = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream()));
-            
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            String inputan;
+            while((inputan = inStream.readLine()) != null){
+                System.out.println(inputan);
+                System.out.println(">> ");
+            }
+        } catch (Exception e) {
         }
     }
+    
     
     /**
      * @param args the command line arguments
@@ -68,11 +63,18 @@ public class Client {
             
             String userInput;
             
-            while((userInput = keyBoard.readLine()) != null){
+            do{
+                System.out.println(">> ");
+                userInput = inStream.readLine();
                 outStream.println(userInput);
-                String message = inStream.readLine();
-                System.out.println("Reply from server : " + message);
-            }
+                outStream.flush();
+            } while(!userInput.equals("quit"));
+            
+//            while((userInput = keyBoard.readLine()) != null){
+//                outStream.println(userInput);
+//                String message = inStream.readLine();
+//                System.out.println("Reply from server : " + message);
+//            }
             
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
