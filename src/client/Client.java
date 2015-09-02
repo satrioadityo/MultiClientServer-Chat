@@ -15,18 +15,18 @@ import java.util.logging.Logger;
 public class Client extends Thread{
     
     static BufferedReader inputStream;
+    GUIClient gui;
 
     public Client(BufferedReader inputStream) {
         this.inputStream = inputStream;
     }
 
-    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         
-        int portNumber = 4444;
+        int portNumber = 1234;
         try {
             
             BufferedReader keyBoard = new BufferedReader(new InputStreamReader(System.in));
@@ -57,17 +57,21 @@ public class Client extends Thread{
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
     public void run() {
         try {
             String inputan;
             while((inputan = inputStream.readLine()) != null){
-                System.err.println(inputan);
-                System.out.print(">> ");
+//                System.out.println(inputan);
+//                System.out.print(">> ");
+                gui.getTxtMessageSent().append(inputan+"\n");
             }
         } catch (Exception e) {
         }
     }
-
+    
+    public void setGui(GUIClient gui) {
+        this.gui = gui;
+    }
 }

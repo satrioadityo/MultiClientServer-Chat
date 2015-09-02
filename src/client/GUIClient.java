@@ -5,10 +5,12 @@
  */
 package client;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -17,6 +19,10 @@ import javax.swing.JOptionPane;
 public class GUIClient extends javax.swing.JFrame {
 
     Client client;
+    Socket connect;
+    PrintWriter outputStream;
+    BufferedReader inputStream;
+    String userName;
     
     /**
      * Creates new form GUIClient
@@ -24,11 +30,6 @@ public class GUIClient extends javax.swing.JFrame {
     public GUIClient() {
         initComponents();
         txtMessageSent.setEditable(false);
-    }
-    
-    public void append(String msg){
-        String fullMsg = txtMessageSent.getText();
-        txtMessageSent.setText(fullMsg+"\n"+msg);
     }
 
     /**
@@ -44,15 +45,13 @@ public class GUIClient extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtMessageSent = new javax.swing.JTextArea();
-        txtUsername = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
         txtPort = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtIPServer = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        btnEdit = new javax.swing.JButton();
-        btnSet = new javax.swing.JButton();
+        btnDisconnect = new javax.swing.JButton();
+        btnConnect = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         txtMessage = new javax.swing.JTextField();
         btnSend = new javax.swing.JButton();
@@ -65,8 +64,6 @@ public class GUIClient extends javax.swing.JFrame {
         txtMessageSent.setRows(5);
         jScrollPane1.setViewportView(txtMessageSent);
 
-        jLabel1.setText("Username");
-
         jLabel2.setText("Port");
 
         jLabel3.setText("IP server");
@@ -74,17 +71,17 @@ public class GUIClient extends javax.swing.JFrame {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("GUI Client ~ developed by Satrio");
 
-        btnEdit.setText("Edit ID");
-        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+        btnDisconnect.setText("Disconnect");
+        btnDisconnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditActionPerformed(evt);
+                btnDisconnectActionPerformed(evt);
             }
         });
 
-        btnSet.setText("Set ID");
-        btnSet.addActionListener(new java.awt.event.ActionListener() {
+        btnConnect.setText("Connect");
+        btnConnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSetActionPerformed(evt);
+                btnConnectActionPerformed(evt);
             }
         });
 
@@ -97,25 +94,22 @@ public class GUIClient extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addGap(24, 24, 24)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtIPServer, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPort, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3))
+                                .addGap(24, 24, 24)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtIPServer, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtPort, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnDisconnect, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnSet, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(btnConnect, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -134,14 +128,10 @@ public class GUIClient extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnEdit)
-                            .addComponent(btnSet))))
+                            .addComponent(btnDisconnect)
+                            .addComponent(btnConnect))))
                 .addContainerGap())
         );
 
@@ -209,7 +199,7 @@ public class GUIClient extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetActionPerformed
+    private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
         // TODO set ID
         // get user input
         String IPserver = txtIPServer.getText();
@@ -219,35 +209,44 @@ public class GUIClient extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Port berupa angka");
         }
-        String userName = txtUsername.getText();
+//        userName = txtUsername.getText();
         
-        // set username, koneksikan ke server dan port
+        // set username, koneksikan socket ke server dan port
         try{
-//            client = new Client(IPserver, portNumber, userName);
-//            if(client.clientSocket.isConnected()){
-//                JOptionPane.showMessageDialog(this, "Berhasil terhubung ke server\n" 
-//                    + client.getServerName(), "Success" , JOptionPane.INFORMATION_MESSAGE);
-//                append(userName+" : just connected to " + client.clientSocket.getRemoteSocketAddress());
-//            }
+            connect = new Socket(IPserver, portNumber);
+            inputStream = new BufferedReader(
+                    new InputStreamReader(connect.getInputStream()));
+            
+            outputStream = new PrintWriter(connect.getOutputStream(), true);
+            
+            client = new Client(inputStream);
+            client.setGui(this);
+            client.start();
+            
+            
+            if(connect.isConnected()){
+                JOptionPane.showMessageDialog(this, "Berhasil terhubung ke server\n",
+                        "Success" , JOptionPane.INFORMATION_MESSAGE);
+            }
+            JOptionPane.showMessageDialog(this, "Send USERNAME anda !",
+                        "Success" , JOptionPane.INFORMATION_MESSAGE);
             txtIPServer.setEditable(false);
             txtPort.setEditable(false);
-            txtUsername.setEditable(false);
         } catch (Exception e) {
             // nothing
         }
         
         
-    }//GEN-LAST:event_btnSetActionPerformed
+    }//GEN-LAST:event_btnConnectActionPerformed
 
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+    private void btnDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisconnectActionPerformed
         // TODO add your handling code here:
         // disconnect
-//        client.closeConnection();
+        client.stop();
         // enable form
         txtIPServer.setEditable(true);
         txtPort.setEditable(true);
-        txtUsername.setEditable(true);
-    }//GEN-LAST:event_btnEditActionPerformed
+    }//GEN-LAST:event_btnDisconnectActionPerformed
 
     private void btnSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendActionPerformed
         // TODO add your handling code here:
@@ -255,17 +254,29 @@ public class GUIClient extends javax.swing.JFrame {
         String msg = txtMessage.getText();
         
         // send ke server
-//        client.outStream.println(msg);
+        outputStream.println(msg);
+        outputStream.flush();
         
-//        try {
-//            // tampilkan ke txt message sent
-////            String msgFromServer = client.inStream.readLine();
-////            append(msgFromServer);
-//        } catch (IOException ex) {
-//            Logger.getLogger(GUIClient.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        // reply dari server sudah dihandle oleh client thread.
         txtMessage.setText("");
     }//GEN-LAST:event_btnSendActionPerformed
+
+    public void append(String msg){
+        String fullMsg = txtMessageSent.getText();
+        txtMessageSent.setText(fullMsg+"\n"+msg);
+    }
+    
+    public JTextArea getTxtMessageSent() {
+        return txtMessageSent;
+    }
+
+    public PrintWriter getOutputStream() {
+        return outputStream;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
 
     /**
      * @param args the command line arguments
@@ -303,10 +314,9 @@ public class GUIClient extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnConnect;
+    private javax.swing.JButton btnDisconnect;
     private javax.swing.JButton btnSend;
-    private javax.swing.JButton btnSet;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -318,6 +328,5 @@ public class GUIClient extends javax.swing.JFrame {
     private javax.swing.JTextField txtMessage;
     private javax.swing.JTextArea txtMessageSent;
     private javax.swing.JTextField txtPort;
-    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }
