@@ -52,7 +52,6 @@ public class Client extends Thread{
                 outputStream.println(userInput);
                 outputStream.flush();
             } while(!userInput.equals("quit"));
-                        
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
